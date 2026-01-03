@@ -154,28 +154,40 @@ pytest tests/test_graph.py -v
 - ✅ Parallel async searches for all contractors
 - ✅ Recency filter (last 12 months)
 - ✅ Source credibility weighting (news > blogs)
-- ✅ **Enforced usage**: 70% Serper reputation + 30% LLM reputation
+- ✅ **Enforced usage**: 70% Serper reputation + 30% LLM reputation (when data available)
+- ✅ **Missing data handling**: Uses neutral scores (0.60-0.70) when Serper API key not configured
 - ✅ Automatic score adjustments based on web research
+- ✅ Distinguishes between "no data found" vs "negative data found"
 
 ### Red Flag Detection
-- ✅ Incomplete scope detection (threshold: 0.7)
-- ✅ Suspiciously low cost detection (multiple methods)
+- ✅ Incomplete scope detection (threshold: 0.75)
+- ✅ Suspiciously low cost detection (multiple methods) - triggers REQUIRES_CLARIFICATION
 - ✅ Vague timeline detection
-- ✅ Poor reputation from web research
+- ✅ Poor reputation from web research (only when actual data found)
 - ✅ Scope text analysis for vagueness
+- ✅ Subcontractor risk detection
+- ✅ Constraint violation detection
+- ✅ Operational disruption risk detection
 
 ### Decision Logic
-- ✅ **ACCEPT**: Score ≥ 0.75, no critical flags, clear winner
-- ✅ **REQUIRES_CLARIFICATION**: Medium issues or close scores
-- ✅ **REJECT_ALL**: Score < 0.60-0.65 or all bids have critical issues
+- ✅ **ACCEPT**: Score ≥ 0.65, no critical flags, clear winner
+- ✅ **REQUIRES_CLARIFICATION**: Medium issues, close scores, or gaming attempts detected
+- ✅ **REJECT_ALL**: Score < 0.55 (truly bad) or critical flags with score < 0.60
 
-## 📚 Documentation
+**Key Improvements:**
+- Lowered acceptance threshold from 0.75 to 0.65 for more realistic evaluation
+- Don't penalize bids for missing Serper web research data (uses neutral scores)
+- Distinguish between missing data vs negative data
+- Only reject truly bad bids (< 0.55) or those with critical flags
 
-- **[USER_STORY.md](USER_STORY.md)**: Complete user story with technical details, thresholds, and examples
-- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**: Full deployment instructions
-- **[QUICK_DEPLOY.md](QUICK_DEPLOY.md)**: Quick 5-minute deployment guide
-- **[EVALUATION_REPORT.md](EVALUATION_REPORT.md)**: Implementation evaluation and improvements
-- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)**: Summary of all enhancements
+## 📚 Recent Improvements
+
+### Fixed Overly Conservative REJECT_ALL Behavior
+- **Lowered acceptance threshold**: From 0.75 to 0.65 for more realistic evaluation
+- **Missing data handling**: Don't penalize bids when Serper API data is unavailable
+- **Improved decision logic**: Only reject truly bad bids (< 0.55) or those with critical flags
+- **Better gaming detection**: Detects suspiciously low cost patterns and requires clarification
+- **Data quality distinction**: Separates missing data from negative data signals
 
 ## 🚀 Deployment
 
@@ -200,12 +212,25 @@ git push -u origin main
 
 3. **Share your link:** `https://YOUR_APP_NAME.streamlit.app`
 
-See [QUICK_DEPLOY.md](QUICK_DEPLOY.md) for detailed steps.
+**Quick Deploy Steps:**
+1. Push code to GitHub
+2. Go to https://share.streamlit.io/
+3. Sign in with GitHub
+4. Click "New app" → Select repository → Set main file: `app.py`
+5. Add API keys in Settings → Secrets (see format below)
+6. Deploy and share your link!
+
+### Streamlit Cloud Secrets Format
+```toml
+OPENAI_API_KEY = "sk-your-key-here"
+SERPER_API_KEY = "your-serper-key"
+LANGSMITH_API_KEY = "your-langsmith-key"  # Optional
+LANGSMITH_PROJECT = "bid-evaluation-agent"  # Optional
+```
 
 ### Other Platforms
-- **Docker**: See `DEPLOYMENT_GUIDE.md`
 - **Railway/Render**: Use `requirements-deploy.txt`
-- **Local Network**: Run with `--server.address 0.0.0.0`
+- **Local Network**: Run with `streamlit run app.py --server.address 0.0.0.0`
 
 ## 🔧 Configuration
 
@@ -296,9 +321,10 @@ Improvements welcome! Key areas:
 ## 📞 Support
 
 For issues or questions:
-1. Check [EVALUATION_REPORT.md](EVALUATION_REPORT.md) for known issues
-2. Review [USER_STORY.md](USER_STORY.md) for technical details
-3. Check Streamlit Cloud logs for deployment issues
+1. Check Streamlit Cloud logs for deployment issues
+2. Verify API keys are correctly configured
+3. Review test cases in `tests/cases/` for expected input format
+4. Check logs in `logs/` directory for detailed error messages
 
 ---
 
