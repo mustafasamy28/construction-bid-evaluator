@@ -1,0 +1,40 @@
+{
+  "project": {
+    "description": "Renovate historic courthouse building. Budget: $3M. Timeline: 12 months. Must preserve historical features and meet heritage regulations."
+  },
+  "bids": [
+    {
+      "id": "bid_1",
+      "contractor_name": "Honest Renovations",
+      "cost": 3200000,
+      "timeline_months": 13,
+      "scope": "Complete renovation preserving all historical features, full compliance with heritage regulations, detailed restoration plan",
+      "warranty_years": 3
+    },
+    {
+      "id": "bid_2",
+      "contractor_name": "Lowball Builders",
+      "cost": 2500000,
+      "timeline_months": 10,
+      "scope": "Renovation work",
+      "warranty_years": 1
+    }
+  ],
+  "expected_recommendation": {
+    "recommendation_type": "REQUIRES_CLARIFICATION",
+    "confidence": ">= 0.75"
+  },
+  "expected_flags": [
+    {
+      "type": "SUSPICIOUSLY_LOW_COST",
+      "affected_bid": "bid_2",
+      "severity": "medium"
+    },
+    {
+      "type": "INCOMPLETE_SCOPE",
+      "affected_bid": "bid_2",
+      "severity": "high"
+    }
+  ]
+}
+

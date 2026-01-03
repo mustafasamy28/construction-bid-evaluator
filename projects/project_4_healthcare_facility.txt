@@ -1,0 +1,46 @@
+PROJECT: Healthcare Facility Renovation
+
+Project ID: NY-HF-0610-MD
+Location: New York City
+Building Type: Medical office building
+Site: Existing occupied medical facility
+
+OVERVIEW:
+Comprehensive renovation of a 3-story medical office building while maintaining full patient operations. This is a highly sensitive project requiring strict adherence to healthcare regulations, infection control protocols, and patient safety standards.
+
+Quality, compliance, and patient safety are non-negotiable. Cost and timeline are important but secondary to regulatory compliance and zero patient impact.
+
+SCOPE OF WORK:
+Mandatory Inclusions:
+- Complete HVAC system replacement (medical-grade air filtration)
+- Electrical system upgrade (backup power, medical equipment circuits)
+- Plumbing upgrades (medical gas systems, water filtration)
+- Interior renovation (patient rooms, waiting areas, exam rooms)
+- ADA compliance improvements
+- Infection control measures (negative pressure rooms, HEPA filtration)
+- All permits and healthcare facility certifications
+
+CONSTRAINTS:
+Budget: Target $3.5M, acceptable up to $4M for compliance and safety enhancements
+Timeline: Target 8 months, but quality and compliance cannot be rushed
+Operational: Facility must remain fully operational. Phased construction required. No construction during patient hours (7am-7pm weekdays)
+Regulatory: Must comply with NY State healthcare facility regulations, ADA requirements, and infection control standards
+
+CONTRACTOR REQUIREMENTS:
+- Healthcare facility construction experience MANDATORY
+- Knowledge of medical gas systems, infection control protocols
+- Healthcare facility certification process experience
+- Strong safety record (OSHA compliance critical)
+- Ability to work in occupied healthcare environments
+- References from similar healthcare projects required
+
+PRIORITIES:
+Compliance and patient safety are absolute priorities. We will not compromise on healthcare regulations or infection control. Timeline flexibility exists if needed for proper compliance. Cost is acceptable if it ensures full regulatory compliance.
+
+KNOWN RISKS:
+- Healthcare facility permit process is complex and time-consuming
+- Infection control requirements may require additional work
+- Patient operations cannot be disrupted under any circumstances
+- Regulatory inspections are strict and unforgiving
+- Medical equipment coordination adds complexity
+

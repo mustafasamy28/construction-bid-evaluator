@@ -1,0 +1,32 @@
+{
+  "project": {
+    "description": "Commercial renovation of occupied mixed-use building in downtown Los Angeles. Project ID: LA-CR-0426-MX. Building must remain partially operational with tenants on floors 2 and 4 during weekdays. Scope includes electrical rewiring (legacy copper/aluminum), HVAC system upgrade, interior redesign (lobby, common areas, 3 office floors). Target budget: $1.2M (acceptable up to $1.35M). Target timeline: 6 months (acceptable extension 2 weeks). Operational constraints: No full-day power shutdowns on weekdays, noise-intensive work restricted to weekends/nights, HVAC downtime staged floor-by-floor. Must comply with California Title 24. Priorities: Delivery risk and operational disruption are higher priority than cost. Willing to accept slightly higher cost/longer timeline if risk and disruption are demonstrably lower."
+  },
+  "bids": [
+    {
+      "id": "b1",
+      "contractor_name": "Tutor Perini",
+      "cost": 1180000,
+      "timeline_months": 6,
+      "scope": "Complete electrical rewiring including legacy copper and aluminum systems, full HVAC system upgrade with central and floor-level units, comprehensive interior redesign of lobby, common areas, and 3 office floors. Includes fire suppression system upgrade, seismic bracing recommendations, and all permits. Phased approach to maintain tenant operations on floors 2 and 4. All work scheduled to avoid weekday power shutdowns.",
+      "warranty_years": 2
+    },
+    {
+      "id": "b2",
+      "contractor_name": "BESIX",
+      "cost": 1250000,
+      "timeline_months": 5,
+      "scope": "HVAC system upgrade and interior redesign of lobby and common areas. Electrical work will be subcontracted to local partner. Phased approach for occupied building operations.",
+      "warranty_years": 1
+    },
+    {
+      "id": "b3",
+      "contractor_name": "Nakano Corporation",
+      "cost": 1050000,
+      "timeline_months": 7,
+      "scope": "Interior redesign work only. Client to manage MEP systems separately through other contractors.",
+      "warranty_years": 1
+    }
+  ]
+}
+

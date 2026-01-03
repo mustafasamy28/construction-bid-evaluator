@@ -1,0 +1,391 @@
+PROJECT (agentInput)
+commercial renovation 
+
+Project ID: LA-CR-0426-MX
+Location: Downtown Los Angeles
+Building Type: Mixeduse commercial (offices, retail)
+Building Age: 28 years (last renovation 2009)
+
+1  Overview 
+
+Mid size but operationally sensitive commercial renovation of an occupied mixed  use building in downtown Los Angeles  The building must remain partially operational throughout construction, with tenants present on floors 2 and 4 during weekdays 
+
+The renovation scope includes core MEP upgrades, interior modernization, and selective structural reinforcement, with strong emphasis on safety, regulatory compliance, and schedule reliability 
+
+While cost matters, delivery risk and operational disruption are higher  priority concerns 
+
+2  Scope of Work
+Mandatory Inclusions
+
+Electrical rewiring (legacy copper , partial aluminum)
+
+HVAC system upgrade (central , floor  level units)
+
+Interior redesign (lobby, common areas, 3 office floors)
+
+Conditional / Ambiguous Items
+
+Fire suppression system upgrade (required if electrical scope triggers code review)
+
+Seismic bracing (recommended, not explicitly mandated)
+
+Smart building sensors (nice  to  have, budget dependent)
+
+Note: Some historical blueprints are missing or outdated 
+
+3  Constraints & Preferences (Conflicting by Design)
+Budget
+
+Target budget: $1 2M
+
+Acceptable overrun: up to ,8% if risk reduction is demonstrable
+
+Hard stop above $1 35M unless scope reduction justified
+
+Timeline
+
+Target completion: 6 months
+
+Acceptable extension: ,2 weeks
+
+Penalties apply for delays beyond that
+
+Operational Constraints
+
+No full  day power shutdowns on weekdays
+
+Noise  intensive work restricted to weekends and nights
+
+HVAC downtime must be staged floor  by  floor
+
+4  Regulatory & Compliance Considerations
+
+Must comply with California Title 24
+
+City permits required; approval timelines historically unpredictable
+
+Building has prior minor OSHA citation (resolved, but reputational sensitivity)
+
+5  Contractor Requirements (Implicit , Explicit)
+Explicit
+
+Proven US commercial renovation experience
+
+Ability to manage multi  phase, occupied  building projects
+
+Strong safety record
+
+Implicit / Soft Signals
+
+Familiarity with LA city permitting processes
+
+Local subcontractor network preferred
+
+History of handling legacy electrical systems is a plus
+
+6  Bid Evaluation Guidance (Non  Numeric, Subjective)
+
+We are not simply selecting the cheapest or fastest bid 
+
+Decision should consider:
+
+Scope completeness vs hidden exclusions
+
+Realism of timelines vs confidence levels
+
+Risk introduced by subcontracting critical paths
+
+Evidence of similar past projects
+
+External reputation and delivery history
+
+We are willing to accept:
+
+Slightly higher cost
+
+Slightly longer timelines
+
+If and only if risk and disruption are demonstrably lower 
+
+7  Known Risks & Ambiguities (Buried Signals)
+
+One prior renovation experienced a 6  week delay due to permit revisions
+
+Electrical infrastructure condition worse than documented
+
+One tenant is planning a lease renewal contingent on minimal disruption
+
+Insurance provider has flagged construction risk as “moderate  high”
+
+8  Expected Agent Responsibilities
+
+You are expected to:
+
+Extract structured requirements from this description
+
+Identify hidden constraints and implicit priorities
+
+Resolve conflicting objectives (cost vs risk vs timeline)
+
+Enrich contractor understanding via external data (web/RAG)
+
+Evaluate bids holistically, not mechanically
+
+Produce an explainable, confidence  weighted recommendation
+
+9  Output Expectations
+
+Your final output must include:
+
+Structured requirements
+
+Identified risks (explicit , inferred)
+
+Bid comparisons with justification
+
+Confidence levels and decision rationale
+
+Clear explanation of trade  offs made
+
+You must explain why certain constraints were deprioritized
+
+// Guide only, you may change and adapt
+input:
+[
+  {
+    "bid_id": "b1",
+    "company_name": "Tutor Perini",
+    "cost": {
+      "total_usd": 1180000,
+      "currency": "USD",
+      "cost_breakdown": {
+        "labor": 520000,
+        "materials": 430000,
+        "contingency": 230000
+      }
+    },
+    "timeline": {
+      "estimated_months": 6,
+      "confidence_level": 0 85,
+      "critical_path_risk": "Medium"
+    },
+    "scope_coverage": {
+      "included": ["Electrical", "HVAC", "Interior"],
+      "excluded": [],
+      "subcontracted": []
+    },
+    "assumptions": [
+      "Parallel execution of HVAC and electrical work",
+      "No major permitting delays"
+    ],
+    "dependencies": [
+      "City permit approval within 30 days"
+    ],
+    "prior_similar_projects_count": 42,
+    "delivery_history": {
+      "on_time_percentage": 0 91,
+      "on_budget_percentage": 0 88,
+      "known_delays": []
+    },
+    "legal_and_compliance": {
+      "open_litigation": false,
+      "safety_violations_last_5_years": 1
+    },
+    "bid_metadata": {
+      "submission_channel": "online",
+      "submission_timestamp": "2026  02  12T14:22:00Z",
+      "bid_revision": 2
+    }
+  },
+  {
+    "bid_id": "b2",
+    "company_name": "BESIX",
+    "cost": {
+      "total_usd": 1250000,
+      "currency": "USD",
+      "cost_breakdown": {
+        "labor": 480000,
+        "materials": 510000,
+        "contingency": 260000
+      }
+    },
+    "timeline": {
+      "estimated_months": 5,
+      "confidence_level": 0 62,
+      "critical_path_risk": "High"
+    },
+    "scope_coverage": {
+      "included": ["HVAC", "Interior"],
+      "excluded": ["Electrical"],
+      "subcontracted": ["Electrical"]
+    },
+    "assumptions": [
+      "Electrical work outsourced to local partner"
+    ],
+    "dependencies": [
+      "Availability of approved local subcontractor"
+    ],
+    "prior_similar_projects_count": 18,
+    "delivery_history": {
+      "on_time_percentage": 0 76,
+      "on_budget_percentage": 0 81,
+      "known_delays": ["Supply chain disruption (2024)"]
+    },
+    "legal_and_compliance": {
+      "open_litigation": false,
+      "safety_violations_last_5_years": 0
+    },
+    "bid_metadata": {
+      "submission_channel": "email",
+      "submission_timestamp": "2026  02  11T09:05:00Z",
+      "bid_revision": 1
+    }
+  },
+  {
+    "bid_id": "b3",
+    "company_name": "Nakano Corporation",
+    "cost": {
+      "total_usd": 1050000,
+      "currency": "USD",
+      "cost_breakdown": {
+        "labor": 390000,
+        "materials": 410000,
+        "contingency": 250000
+      }
+    },
+    "timeline": {
+      "estimated_months": 7,
+      "confidence_level": 0 55,
+      "critical_path_risk": "High"
+    },
+    "scope_coverage": {
+      "included": ["Interior"],
+      "excluded": ["HVAC", "Electrical"],
+      "subcontracted": []
+    },
+    "assumptions": [
+      "Interior  only engagement",
+      "Client manages MEP separately"
+    ],
+    "dependencies": [
+      "Coordination with third  party MEP contractors"
+    ],
+    "prior_similar_projects_count": 9,
+    "delivery_history": {
+      "on_time_percentage": 0 69,
+      "on_budget_percentage": 0 73,
+      "known_delays": ["Permit approval delays (Japan  based projects)"]
+    },
+    "legal_and_compliance": {
+      "open_litigation": false,
+      "safety_violations_last_5_years": 2
+    },
+    "bid_metadata": {
+      "submission_channel": "online_portal",
+      "submission_timestamp": "2026  02  10T18:40:00Z",
+      "bid_revision": 1
+    }
+  }
+]
+
+
+Output:{
+  "external_company_insights": {
+    "Tutor Perini": {
+      "sources": [
+        "https://en wikipedia org/wiki/Tutor_Perini",
+        "https://www tutorperini com/projects"
+      ],
+      "key_signals": {
+        "us_commercial_experience": true,
+        "project_scale_alignment": "High",
+        "recent_negative_news": false
+      },
+      "confidence_score": 0 92
+    },
+    "BESIX": {
+      "sources": [
+        "https://en wikipedia org/wiki/Besix",
+        "https://www besix com"
+      ],
+      "key_signals": {
+        "us_commercial_experience": "Limited",
+        "project_scale_alignment": "High",
+        "recent_negative_news": false
+      },
+      "confidence_score": 0 78
+    },
+    "Nakano Corporation": {
+      "sources": [
+        "https://en wikipedia org/wiki/Nakano_Corporation"
+      ],
+      "key_signals": {
+        "us_commercial_experience": false,
+        "project_scale_alignment": "Medium",
+        "recent_negative_news": false
+      },
+      "confidence_score": 0 64
+    }
+  },
+  "retrieved_context_used": true,
+  "rag_trace": {
+    "vector_store": "",
+    "embedding_model": "ur_choice",
+    "documents_retrieved_per_company": 5,
+    "retrieval_confidence_threshold": 0 7
+  },
+  "bid_scores": [
+    {
+      "bid_id": "b1",
+      "company_name": "Tutor Perini",
+      "score_breakdown": {
+        "cost_score": 0 86,
+        "timeline_score": 0 82,
+        "scope_fit_score": 1 0,
+        "risk_score": 0 88,
+        "external_reputation_score": 0 9
+      },
+      "final_weighted_score": 0 89,
+      "flags": [f4]
+    },
+    {
+      "bid_id": "b2",
+      "company_name": "BESIX",
+      "score_breakdown": {
+        "cost_score": 0 74,
+        "timeline_score": 0 91,
+        "scope_fit_score": 0 72,
+        "risk_score": 0 77,
+        "external_reputation_score": 0 85
+      },
+      "final_weighted_score": 0 80,
+      "flags": ["f1"]
+    },
+    {
+      "bid_id": "b3",
+      "company_name": "Nakano Corporation",
+      "score_breakdown": {
+        "cost_score": 0 93,
+        "timeline_score": 0 61,
+        "scope_fit_score": 0 45,
+        "risk_score": 0 58,
+        "external_reputation_score": 0 7
+      },
+      "final_weighted_score": 0 63,
+      "flags": ["x1", "f2"]
+    }
+  ],
+  "ranked_recommendations": ["b1", "b2", "b3"],
+  "final_recommendation": {
+    "bid_id": "b1",
+    "company_name": "Tutor Perini",
+    "confidence": 0 91,
+    "decision_rationale": [
+      "Full scope coverage",
+      "Strong US commercial experience",
+      "Balanced cost  risk profile",
+      "High external data confidence"
+    ]
+  },
+  "explanation": "Tutor Perini is recommended due xyz  "
+}

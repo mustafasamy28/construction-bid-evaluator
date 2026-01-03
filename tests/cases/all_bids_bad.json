@@ -1,0 +1,46 @@
+{
+  "project": {
+    "description": "Construct a modern hospital wing with specialized medical facilities. Budget: $20M. Timeline: 24 months. Must meet strict medical facility regulations."
+  },
+  "bids": [
+    {
+      "id": "bid_1",
+      "contractor_name": "Shady Builders LLC",
+      "cost": 18000000,
+      "timeline_months": 18,
+      "scope": "Hospital wing",
+      "warranty_years": 0
+    },
+    {
+      "id": "bid_2",
+      "contractor_name": "CutCorner Construction",
+      "cost": 15000000,
+      "timeline_months": 12,
+      "scope": "Medical building",
+      "warranty_years": 0
+    },
+    {
+      "id": "bid_3",
+      "contractor_name": "Unlicensed Co",
+      "cost": 19000000,
+      "timeline_months": 30,
+      "scope": "Building construction",
+      "warranty_years": 0
+    }
+  ],
+  "expected_recommendation": {
+    "recommendation_type": "REJECT_ALL",
+    "confidence": ">= 0.80"
+  },
+  "expected_flags": [
+    {
+      "type": "INCOMPLETE_SCOPE",
+      "severity": "high"
+    },
+    {
+      "type": "VAGUE_TIMELINE",
+      "severity": "medium"
+    }
+  ]
+}
+

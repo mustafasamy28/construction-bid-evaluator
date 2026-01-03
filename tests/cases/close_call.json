@@ -1,0 +1,43 @@
+{
+  "project": {
+    "description": "Construct a residential apartment complex with 100 units, community center, and landscaping. Budget: $12M. Timeline: 22 months."
+  },
+  "bids": [
+    {
+      "id": "bid_1",
+      "contractor_name": "Quality Homes Co",
+      "cost": 11800000,
+      "timeline_months": 23,
+      "scope": "100-unit complex, community center, full landscaping, all permits and utilities",
+      "warranty_years": 2
+    },
+    {
+      "id": "bid_2",
+      "contractor_name": "FastTrack Builders",
+      "cost": 12200000,
+      "timeline_months": 20,
+      "scope": "100-unit complex, community center, landscaping, all permits",
+      "warranty_years": 2
+    },
+    {
+      "id": "bid_3",
+      "contractor_name": "Budget Apartments",
+      "cost": 11500000,
+      "timeline_months": 25,
+      "scope": "Apartment complex",
+      "warranty_years": 1
+    }
+  ],
+  "expected_recommendation": {
+    "recommendation_type": "ACCEPT",
+    "confidence": "0.70 - 0.85",
+    "top_bids": ["bid_1", "bid_2"]
+  },
+  "expected_flags": [
+    {
+      "type": "INCOMPLETE_SCOPE",
+      "affected_bid": "bid_3"
+    }
+  ]
+}
+

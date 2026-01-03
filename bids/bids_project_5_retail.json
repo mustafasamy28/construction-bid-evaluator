@@ -1,0 +1,32 @@
+{
+  "project": {
+    "description": "Retail store chain renovation in Miami, Florida. Project ID: FL-RT-0412-CH. Renovation of 5 retail locations across Miami-Dade County simultaneously. Per location: interior demolition and rebuild, new flooring/lighting/fixtures, POS systems and electrical, HVAC upgrades, exterior facade refresh, signage replacement. Target budget: $800K per location ($4M total, hard cap $4.5M). Target timeline: 3 months per location, all complete within 6 months. Each location closes maximum 2 weeks. Priorities: Cost control is critical. Consistency across all 5 locations is essential. Standardized quality at competitive pricing."
+  },
+  "bids": [
+    {
+      "id": "b1",
+      "contractor_name": "Moss Construction",
+      "cost": 4200000,
+      "timeline_months": 6,
+      "scope": "Complete renovation of all 5 retail locations with standardized package: interior demolition and rebuild, new flooring/lighting/fixtures, updated POS systems and electrical, HVAC upgrades, exterior facade refresh, signage replacement, all permits. Staggered schedule to minimize disruption. Strong multi-location project management with quality control processes to ensure consistency across all locations. Miami-Dade County experience.",
+      "warranty_years": 2
+    },
+    {
+      "id": "b2",
+      "contractor_name": "Retail Renovation Specialists",
+      "cost": 3800000,
+      "timeline_months": 5,
+      "scope": "Renovation of 5 retail locations with interior work, fixtures, electrical, HVAC, and exterior updates. Standardized approach across locations.",
+      "warranty_years": 1
+    },
+    {
+      "id": "b3",
+      "contractor_name": "Budget Retail Builders",
+      "cost": 3600000,
+      "timeline_months": 7,
+      "scope": "Retail store renovations at 5 locations. Basic interior and exterior improvements.",
+      "warranty_years": 1
+    }
+  ]
+}
+

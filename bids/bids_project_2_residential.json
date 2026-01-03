@@ -1,0 +1,32 @@
+{
+  "project": {
+    "description": "New 8-story residential apartment complex in San Francisco Bay Area. Project ID: SF-RC-0325-HQ. 120 residential units (mix of studios, 1BR, 2BR), ground-floor retail (5,000 sq ft), underground parking (150 spaces). Target budget: $18M (hard cap $19.5M). Target timeline: 24 months (must complete before Q4 2027 for tax incentives). Must achieve LEED Gold certification. Priorities: Cost is primary driver, but quality and sustainability cannot be sacrificed. Timeline important due to tax incentives."
+  },
+  "bids": [
+    {
+      "id": "b1",
+      "contractor_name": "Webcor Builders",
+      "cost": 18500000,
+      "timeline_months": 23,
+      "scope": "Complete 8-story structure with reinforced concrete frame, 120 residential units, ground-floor retail spaces, underground parking garage (150 spaces), all MEP systems, landscaping, exterior finishes, and full LEED Gold certification process. Includes all permits and certifications. Proven track record with LEED-certified residential projects in SF Bay Area.",
+      "warranty_years": 3
+    },
+    {
+      "id": "b2",
+      "contractor_name": "Swinerton Builders",
+      "cost": 19200000,
+      "timeline_months": 22,
+      "scope": "Complete construction including all residential units, retail space, parking, MEP systems, and LEED Gold certification. Strong SF Bay Area presence with multiple LEED projects completed.",
+      "warranty_years": 2
+    },
+    {
+      "id": "b3",
+      "contractor_name": "Budget Residential Co",
+      "cost": 17500000,
+      "timeline_months": 26,
+      "scope": "Residential building construction with units and parking. LEED certification process to be coordinated separately.",
+      "warranty_years": 1
+    }
+  ]
+}
+

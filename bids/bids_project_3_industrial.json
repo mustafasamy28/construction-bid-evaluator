@@ -1,0 +1,32 @@
+{
+  "project": {
+    "description": "Industrial warehouse expansion in Houston, Texas. Project ID: TX-IW-0515-EX. Expansion of existing 50,000 sq ft facility by adding 30,000 sq ft and upgrading loading docks. Existing facility must remain fully operational. CRITICAL timeline: Must complete in 4 months to meet peak season deadline. Target budget: $2.5M (flexible up to $2.8M if timeline accelerated). Priorities: Timeline is CRITICAL - every week of delay costs $50K. Speed and operational continuity are highest priorities. Cost is secondary."
+  },
+  "bids": [
+    {
+      "id": "b1",
+      "contractor_name": "TIC Industrial",
+      "cost": 2650000,
+      "timeline_months": 4,
+      "scope": "Complete 30,000 sq ft warehouse addition with steel frame and metal siding, 6 new loading dock positions with dock levelers, expanded parking (50 spaces), utility connections, fire suppression extension, security integration. Phased construction plan to maintain continuous operations. 24/7 work capability if needed. Proven fast-track industrial experience.",
+      "warranty_years": 2
+    },
+    {
+      "id": "b2",
+      "contractor_name": "FastTrack Industrial",
+      "cost": 2400000,
+      "timeline_months": 3,
+      "scope": "Warehouse expansion and loading docks. Will work around existing operations. Aggressive schedule with extended hours.",
+      "warranty_years": 1
+    },
+    {
+      "id": "b3",
+      "contractor_name": "Standard Builders",
+      "cost": 2300000,
+      "timeline_months": 5,
+      "scope": "Warehouse addition and dock improvements. Standard construction timeline.",
+      "warranty_years": 1
+    }
+  ]
+}
+

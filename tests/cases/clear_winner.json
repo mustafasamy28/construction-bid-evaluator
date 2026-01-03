@@ -1,0 +1,43 @@
+{
+  "project": {
+    "description": "Build a 5-story office building in downtown area. Budget: $5M. Timeline: 18 months. Must comply with local building codes and include parking garage."
+  },
+  "bids": [
+    {
+      "id": "bid_1",
+      "contractor_name": "Elite Construction Co",
+      "cost": 4800000,
+      "timeline_months": 17,
+      "scope": "Complete 5-story building with parking garage, full compliance with codes, includes all permits",
+      "warranty_years": 2
+    },
+    {
+      "id": "bid_2",
+      "contractor_name": "Budget Builders",
+      "cost": 5200000,
+      "timeline_months": 20,
+      "scope": "5-story building, parking garage (may require additional permits)",
+      "warranty_years": 1
+    },
+    {
+      "id": "bid_3",
+      "contractor_name": "QuickFix Inc",
+      "cost": 4500000,
+      "timeline_months": 15,
+      "scope": "Building construction",
+      "warranty_years": 1
+    }
+  ],
+  "expected_recommendation": {
+    "recommendation_type": "ACCEPT",
+    "confidence": ">= 0.85",
+    "top_bid": "bid_1"
+  },
+  "expected_flags": [
+    {
+      "type": "INCOMPLETE_SCOPE",
+      "affected_bid": "bid_3"
+    }
+  ]
+}
+

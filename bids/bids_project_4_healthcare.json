@@ -1,0 +1,32 @@
+{
+  "project": {
+    "description": "Healthcare facility renovation in New York City. Project ID: NY-HF-0610-MD. Comprehensive renovation of 3-story medical office building while maintaining full patient operations. Scope includes complete HVAC replacement (medical-grade air filtration), electrical upgrade (backup power, medical equipment circuits), plumbing upgrades (medical gas systems), interior renovation, ADA compliance, infection control measures. Target budget: $3.5M (acceptable up to $4M for compliance). Target timeline: 8 months. Priorities: Compliance and patient safety are absolute priorities. Quality and compliance cannot be rushed. Facility must remain fully operational with phased construction."
+  },
+  "bids": [
+    {
+      "id": "b1",
+      "contractor_name": "Turner Construction",
+      "cost": 3850000,
+      "timeline_months": 8,
+      "scope": "Complete healthcare facility renovation including medical-grade HVAC with HEPA filtration, electrical system with backup power and medical equipment circuits, medical gas systems, plumbing upgrades, interior renovation of patient rooms and exam rooms, ADA compliance improvements, infection control measures including negative pressure rooms, all permits and healthcare facility certifications. Phased construction plan to maintain full patient operations. Extensive healthcare facility experience with NY State regulations.",
+      "warranty_years": 3
+    },
+    {
+      "id": "b2",
+      "contractor_name": "Healthcare Renovators Inc",
+      "cost": 3500000,
+      "timeline_months": 7,
+      "scope": "Medical facility renovation including HVAC, electrical, plumbing upgrades, and interior work. Healthcare construction experience.",
+      "warranty_years": 2
+    },
+    {
+      "id": "b3",
+      "contractor_name": "General Contractors LLC",
+      "cost": 3200000,
+      "timeline_months": 6,
+      "scope": "Building renovation work including HVAC, electrical, and interior improvements.",
+      "warranty_years": 1
+    }
+  ]
+}
+

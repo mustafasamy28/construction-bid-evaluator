@@ -1,0 +1,35 @@
+{
+  "project": {
+    "description": "Build a shopping mall with 50 stores, food court, and parking for 500 cars. Budget: $15M. Timeline: 20 months."
+  },
+  "bids": [
+    {
+      "id": "bid_1",
+      "contractor_name": "Mall Masters Inc",
+      "cost": 15200000,
+      "timeline_months": 21,
+      "scope": "Complete mall with 50 stores, food court, parking for 500 cars, all utilities and permits",
+      "warranty_years": 2
+    },
+    {
+      "id": "bid_2",
+      "contractor_name": "Partial Builders",
+      "cost": 14800000,
+      "timeline_months": 19,
+      "scope": "Shopping mall construction, stores, food court",
+      "warranty_years": 2
+    }
+  ],
+  "expected_recommendation": {
+    "recommendation_type": "ACCEPT",
+    "confidence": ">= 0.70"
+  },
+  "expected_flags": [
+    {
+      "type": "INCOMPLETE_SCOPE",
+      "affected_bid": "bid_2",
+      "severity": "low"
+    }
+  ]
+}
+
