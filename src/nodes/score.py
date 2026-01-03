@@ -176,8 +176,8 @@ Score this bid. You MUST use the contractor profile data from web research in yo
             scores.append(score)
             
             # Detect red flags - using both bid analysis and Serper web research data
-            # Check for incomplete scope - use more lenient threshold
-            scope_threshold = 0.7  # More lenient to catch vague scopes
+            # Check for incomplete scope - stricter threshold for better detection
+            scope_threshold = 0.75  # Stricter to catch more incomplete/vague scopes
             if score.scope_score < scope_threshold:
                 # Determine severity based on how incomplete
                 if score.scope_score < 0.5:
