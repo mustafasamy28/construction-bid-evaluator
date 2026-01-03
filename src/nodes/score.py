@@ -3,7 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from src.state import BidEvalState
 from src.schemas import BidScore, RedFlag, RedFlagType
 from src.config import gpt4o_mini
-from src.utils import calculate_dynamic_weights, detect_constraint_violations
+from src.utils import detect_constraint_violations
 
 logger = logging.getLogger(__name__)
 
@@ -24,15 +24,15 @@ def score_and_flag(state: BidEvalState) -> BidEvalState:
     requirements = state["requirements"]
     contractor_profiles = {p.contractor_name: p for p in state.get("contractor_profiles", [])}
     
-    # Calculate dynamic weights based on project priorities
-    weights = calculate_dynamic_weights(requirements) if requirements else {
+    # Use fixed weights (original approach)
+    weights = {
         "cost": 0.25,
         "timeline": 0.20,
         "scope": 0.25,
         "risk": 0.15,
         "reputation": 0.15,
     }
-    logger.info(f"Scoring {len(bids)} bids with dynamic weights: Cost={weights['cost']:.0%}, Timeline={weights['timeline']:.0%}, Scope={weights['scope']:.0%}, Risk={weights['risk']:.0%}, Reputation={weights['reputation']:.0%}")
+    logger.info(f"Scoring {len(bids)} bids with fixed weights: Cost={weights['cost']:.0%}, Timeline={weights['timeline']:.0%}, Scope={weights['scope']:.0%}, Risk={weights['risk']:.0%}, Reputation={weights['reputation']:.0%}")
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """Score the bid across 5 dimensions (0-1 scale) using the contractor profile data from web research:
@@ -162,7 +162,7 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                     # No recent projects and low reputation = higher risk
                     score.risk_score = max(0.0, score.risk_score - 0.1)
             
-            # Calculate weighted overall score using dynamic weights
+            # Calculate weighted overall score using fixed weights
             score.overall_score = (
                 score.cost_score * weights["cost"] +
                 score.timeline_score * weights["timeline"] +
