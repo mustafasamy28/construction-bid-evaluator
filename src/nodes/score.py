@@ -261,8 +261,11 @@ Score this bid. You MUST use the contractor profile data from web research in yo
             
             # ENFORCE: Use Serper web research data for red flags
             if profile:
-                # Red flags from web research (Serper)
-                if profile.red_flags_found:
+                # Only flag reputation issues if we have actual web research data (not default/missing API key)
+                has_web_research = profile.credibility_sources or profile.red_flags_found or (profile.reputation_score != 0.5 and profile.recent_projects)
+                
+                # Red flags from web research (Serper) - only if we have actual data
+                if profile.red_flags_found and has_web_research:
                     severity = "critical" if len(profile.red_flags_found) >= 3 else "high"
                     red_flags.append(RedFlag(
                         type=RedFlagType.POOR_REPUTATION,
@@ -271,8 +274,8 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                         affected_bid=score.bid_id,
                     ))
                 
-                # If reputation score from Serper is very low, flag it
-                if profile.reputation_score < 0.6:
+                # If reputation score from Serper is very low, flag it - only if we have actual web research
+                if profile.reputation_score < 0.6 and has_web_research:
                     red_flags.append(RedFlag(
                         type=RedFlagType.POOR_REPUTATION,
                         severity="high",
@@ -280,8 +283,8 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                         affected_bid=score.bid_id,
                     ))
                 
-                # If no recent projects found, flag as potential risk
-                if not profile.recent_projects and profile.reputation_score < 0.7:
+                # If no recent projects found, flag as potential risk - only if we have web research data
+                if not profile.recent_projects and profile.reputation_score < 0.7 and has_web_research:
                     red_flags.append(RedFlag(
                         type=RedFlagType.REQUIRES_CLARIFICATION,
                         severity="medium",

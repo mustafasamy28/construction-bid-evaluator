@@ -130,8 +130,10 @@ def test_close_call():
     scores = result.get("scores", [])
     if len(scores) >= 2:
         score_diff = scores[0].overall_score - scores[1].overall_score
-        if score_diff < 0.05:
-            # Close scores should have trade-offs
+        # Only check for trade-offs if recommendation is ACCEPT or REQUIRES_CLARIFICATION
+        # (REJECT_ALL won't have trade-offs since all bids are rejected)
+        if score_diff < 0.05 and rec.recommendation_type.value in ["ACCEPT", "REQUIRES_CLARIFICATION"]:
+            # Close scores should have trade-offs when accepting/clarifying
             assert len(rec.trade_offs) > 0, "Close scores should have trade-offs explained"
 
 
