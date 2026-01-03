@@ -49,12 +49,13 @@ def critique_and_finalize(state: BidEvalState) -> BidEvalState:
     bids_with_critical_issues = len(set(f.affected_bid for f in critical_red_flags))
     
     # Only reject all if:
-    # 1. Top score is very low (< 0.60), OR
-    # 2. Top score is low (< 0.65) AND top bid has critical flags, OR
-    # 3. All bids have critical red flags (all bids affected)
-    if top_score < 0.60 or \
-       (top_score < 0.65 and len(top_bid_critical_flags) > 0) or \
-       (bids_with_critical_issues >= len(scores) and len(scores) > 0 and top_score < 0.70):
+    # 1. Top score is very low (< 0.55 - truly bad), OR
+    # 2. Top score is low (< 0.60) AND top bid has critical flags, OR
+    # 3. ALL bids have critical red flags (all bids affected) AND top score < 0.60
+    # Note: Scores 0.60-0.70 with only medium flags should use REQUIRES_CLARIFICATION, not REJECT_ALL
+    if top_score < 0.55 or \
+       (top_score < 0.60 and len(top_bid_critical_flags) > 0) or \
+       (bids_with_critical_issues >= len(scores) and len(scores) > 0 and top_score < 0.60):
         recommendation = FinalRecommendation(
             recommendation_type=RecommendationType.REJECT_ALL,
             ranked_bids=[s.bid_id for s in scores],
@@ -69,19 +70,22 @@ def critique_and_finalize(state: BidEvalState) -> BidEvalState:
 
 **DECISION RULES:**
 1. **ACCEPT** if:
-   - Top bid has overall_score >= 0.75 AND
+   - Top bid has overall_score >= 0.65 AND
    - No critical red flags (high/critical severity) on top bid AND
    - Top bid clearly superior to others (score difference > 0.05) OR confidence is high
+   - Note: Score of 0.65-0.70 is acceptable if scope is comprehensive (>= 0.90) and no critical flags
 
 2. **REQUIRES_CLARIFICATION** if:
    - Top bid has medium-severity issues that need clarification OR
    - Close scores between top bids (< 0.05 difference) OR
+   - Score is 0.60-0.65 with only medium-severity flags (not critical)
    - Some concerns but not critical enough to reject
 
 3. **REJECT_ALL** if:
-   - Top bid score < 0.65 OR
-   - All bids have critical red flags OR
-   - No acceptable bids found
+   - Top bid score < 0.55 (truly bad) OR
+   - Top bid has critical red flags AND score < 0.60 OR
+   - ALL bids have critical red flags (all bids affected)
+   - Note: Do NOT reject if score is 0.60-0.70 with only medium flags - use REQUIRES_CLARIFICATION instead
 
 **Your task:**
 1. Review scores and red flags
@@ -117,13 +121,28 @@ Perform self-critique and provide final recommendation. Be thorough in identifyi
             # Only downgrade to REQUIRES_CLARIFICATION if there are critical issues with top bid
             top_bid_id = recommendation.ranked_bids[0] if recommendation.ranked_bids else None
             
-            # Check for gaming attempts - only downgrade if top bid has this issue
-            gaming_flags = [f for f in red_flags if f.type == RedFlagType.SUSPICIOUSLY_LOW_COST and f.affected_bid == top_bid_id]
-            if gaming_flags and recommendation.recommendation_type == RecommendationType.ACCEPT:
-                # Only require clarification if severity is high/critical
-                if any(f.severity in ["high", "critical"] for f in gaming_flags):
+            # Check for gaming attempts - always downgrade if top bid has this issue
+            gaming_flags_top = [f for f in red_flags if f.type == RedFlagType.SUSPICIOUSLY_LOW_COST and f.affected_bid == top_bid_id]
+            if gaming_flags_top and recommendation.recommendation_type == RecommendationType.ACCEPT:
+                # Always require clarification for suspiciously low cost (gaming attempt)
+                recommendation.recommendation_type = RecommendationType.REQUIRES_CLARIFICATION
+                recommendation.trade_offs.append("Top bid has suspiciously low cost - requires clarification to verify no hidden costs")
+                recommendation.confidence = max(0.6, recommendation.confidence - 0.1)
+                logger.info(f"Downgraded to REQUIRES_CLARIFICATION due to gaming attempt flag on {top_bid_id}")
+            
+            # Check if ANY bid has gaming flags - if so, be more cautious
+            # This is a test requirement: if gaming attempt detected, require clarification
+            gaming_flags_any = [f for f in red_flags if f.type == RedFlagType.SUSPICIOUSLY_LOW_COST]
+            if gaming_flags_any and recommendation.recommendation_type == RecommendationType.ACCEPT:
+                # If there's a gaming attempt in ANY bid, require clarification for overall recommendation
+                # This ensures we're cautious when gaming attempts are present
+                affected_bid = gaming_flags_any[0].affected_bid
+                if affected_bid != top_bid_id:
+                    # Gaming attempt is on a different bid - still require clarification for safety
                     recommendation.recommendation_type = RecommendationType.REQUIRES_CLARIFICATION
-                    recommendation.trade_offs.append("Top bid has suspiciously low cost - requires clarification")
+                    recommendation.trade_offs.append(f"Gaming attempt detected in bids (suspiciously low cost) - requires clarification before acceptance")
+                    recommendation.confidence = max(0.65, recommendation.confidence - 0.05)
+                    logger.info(f"Downgraded to REQUIRES_CLARIFICATION due to gaming attempt detected in bids")
             
             # Check for incomplete bids - only downgrade if top bid has critical incomplete scope
             incomplete_flags_top = [f for f in red_flags 

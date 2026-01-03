@@ -38,18 +38,30 @@ def score_and_flag(state: BidEvalState) -> BidEvalState:
         ("system", """Score the bid across 5 dimensions (0-1 scale) using the contractor profile data from web research:
 
 - cost_score: Cost competitiveness vs market benchmarks
-- timeline_score: Timeline feasibility and realism. MUST consider recent_projects from contractor profile to assess if contractor has experience with similar timelines
+- timeline_score: Timeline feasibility and realism. If contractor profile has recent_projects, use them to assess experience. If NO web research data available, use bid timeline and scope to assess feasibility - DO NOT penalize for missing data.
 - scope_score: Scope completeness vs requirements
-- risk_score: Risk assessment (financial, technical, execution). MUST factor in red_flags_found from contractor profile and recent project history
-- reputation_score: MUST use the reputation_score from the contractor profile (web research data). This is based on recent news, reviews, and credibility sources found online.
+- risk_score: Risk assessment (financial, technical, execution). If contractor profile has red_flags_found, reduce risk_score. If NO web research data available, assess risk based on bid quality (scope completeness, cost realism) - DO NOT penalize for missing data.
+- reputation_score: If contractor profile has reputation_score from web research, use it. If NO web research data available, use neutral score (0.60-0.70) based on bid quality - DO NOT use very low scores (0.3-0.5) just because data is missing.
 
 CRITICAL INSTRUCTIONS:
 1. The contractor profile contains web research data from Serper API (recent news, reviews, projects)
-2. reputation_score MUST match or closely align with the provided reputation_score from web research
-3. Use recent_projects to inform timeline_score and risk_score - if contractor has similar projects, increase scores
-4. If red_flags_found contains items, significantly reduce risk_score and reputation_score
-5. Reference credibility_sources in your reasoning to show you're using the web research data
-6. Provide detailed reasoning BEFORE assigning scores (chain-of-thought), explicitly mentioning how you used the contractor profile data"""),
+2. **IMPORTANT: Distinguish between "no data found" vs "negative data found"**
+   - If profile shows "No web research data available" → Use bid quality to score, don't penalize
+   - If profile has reputation_score = 0.5 with no sources → Likely missing data, use neutral scores
+   - If profile has red_flags_found or low reputation_score WITH sources → Negative signal, penalize
+3. If web research data EXISTS:
+   - reputation_score MUST match or closely align with provided reputation_score from web research
+   - Use recent_projects to inform timeline_score and risk_score - if contractor has similar projects, increase scores
+   - If red_flags_found contains items, significantly reduce risk_score and reputation_score
+4. If web research data is MISSING:
+   - Use bid quality (scope completeness, cost competitiveness, timeline realism) to score
+   - Use neutral/moderate scores (0.60-0.70) for timeline, risk, reputation - don't use very low scores (0.3-0.5)
+   - Missing data is NOT a negative signal - it's just missing information
+5. Reference credibility_sources in your reasoning to show you're using the web research data (if available)
+6. Provide detailed reasoning BEFORE assigning scores (chain-of-thought), explicitly mentioning:
+   - How you used contractor profile data (if available)
+   - Why you're using neutral scores (if data is missing)
+   - The actual calculation: cost_score×0.25 + timeline_score×0.20 + scope_score×0.25 + risk_score×0.15 + reputation_score×0.15 = overall_score"""),
         ("user", """Requirements: {requirements}
 Bid: {bid}
 Contractor Profile (from web research): {profile}
@@ -81,18 +93,37 @@ Score this bid. You MUST use the contractor profile data from web research in yo
         profile = contractor_profiles.get(contractor_name)
         
         # Format profile data for better LLM understanding
+        # Distinguish between "no data" vs "negative data"
         if profile:
-            profile_data = {
-                "contractor_name": profile.contractor_name,
-                "reputation_score_from_web_research": profile.reputation_score,
-                "recent_projects_found": profile.recent_projects,
-                "red_flags_found_online": profile.red_flags_found,
-                "credibility_sources": profile.credibility_sources,
-                "note": "This data was retrieved from web search (Serper API) in the last 12 months"
-            }
+            has_actual_data = (
+                profile.credibility_sources or 
+                profile.red_flags_found or 
+                (profile.reputation_score != 0.5) or  # Not default value
+                profile.recent_projects
+            )
+            
+            if has_actual_data:
+                profile_data = {
+                    "contractor_name": profile.contractor_name,
+                    "reputation_score_from_web_research": profile.reputation_score,
+                    "recent_projects_found": profile.recent_projects,
+                    "red_flags_found_online": profile.red_flags_found,
+                    "credibility_sources": profile.credibility_sources,
+                    "note": "This data was retrieved from web search (Serper API) in the last 12 months. Use this data to inform your scores."
+                }
+            else:
+                # Profile exists but has default/missing data
+                profile_data = {
+                    "contractor_name": profile.contractor_name,
+                    "reputation_score_from_web_research": profile.reputation_score,
+                    "recent_projects_found": [],
+                    "red_flags_found_online": [],
+                    "credibility_sources": [],
+                    "note": "Web research was attempted but no data found (or Serper API key not configured). Do NOT penalize scores for missing data - use bid quality to assess. Use neutral scores (0.60-0.70) for timeline, risk, and reputation if data is missing."
+                }
         else:
             profile_data = {
-                "note": "No web research data available for this contractor"
+                "note": "No web research data available for this contractor (Serper API may not be configured or contractor not found). Do NOT penalize scores for missing data - use bid quality to assess. Use neutral scores (0.60-0.70) for timeline, risk, and reputation if data is missing."
             }
         
         try:
@@ -139,28 +170,57 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                     logger.info(f"Subcontracted work detected for {contractor_name}, reduced scope_score to {score.scope_score:.2f}")
             
             # ENFORCE: If Serper data exists, use it to adjust scores
+            # IMPORTANT: Distinguish between "no data found" vs "negative data found"
+            has_web_research = profile and (
+                profile.credibility_sources or 
+                profile.red_flags_found or 
+                (profile.reputation_score != 0.5) or  # Not default value
+                profile.recent_projects
+            )
+            
             if profile and profile.reputation_score is not None:
-                # Blend LLM's reputation_score with Serper's reputation_score (70% Serper, 30% LLM)
-                # This ensures Serper data is actually used
-                serper_reputation = profile.reputation_score
-                llm_reputation = score.reputation_score
-                score.reputation_score = (serper_reputation * 0.7) + (llm_reputation * 0.3)
+                # Only blend if we have actual web research data (not default/missing)
+                if has_web_research:
+                    # Blend LLM's reputation_score with Serper's reputation_score (70% Serper, 30% LLM)
+                    serper_reputation = profile.reputation_score
+                    llm_reputation = score.reputation_score
+                    score.reputation_score = (serper_reputation * 0.7) + (llm_reputation * 0.3)
+                    logger.info(f"Using Serper reputation data for {contractor_name}: {serper_reputation:.2f}")
+                else:
+                    # Missing Serper data - use LLM score, don't penalize
+                    logger.info(f"No Serper data for {contractor_name}, using LLM reputation score: {score.reputation_score:.2f}")
                 
-                # Adjust risk_score based on Serper red flags
-                if profile.red_flags_found:
+                # Adjust risk_score based on Serper red flags - only if we have actual data
+                if profile.red_flags_found and has_web_research:
                     # Reduce risk_score if red flags found online
                     risk_reduction = min(0.3, len(profile.red_flags_found) * 0.1)
                     score.risk_score = max(0.0, score.risk_score - risk_reduction)
+                    logger.info(f"Red flags found online for {contractor_name}, reduced risk_score by {risk_reduction:.2f}")
                 
                 # Adjust timeline_score and risk_score based on recent projects
-                if profile.recent_projects:
+                if profile.recent_projects and has_web_research:
                     # Having recent projects increases confidence in timeline and reduces risk
                     project_bonus = min(0.15, len(profile.recent_projects) * 0.03)
                     score.timeline_score = min(1.0, score.timeline_score + project_bonus)
                     score.risk_score = min(1.0, score.risk_score + project_bonus * 0.5)
-                elif not profile.recent_projects and profile.reputation_score < 0.7:
-                    # No recent projects and low reputation = higher risk
-                    score.risk_score = max(0.0, score.risk_score - 0.1)
+                    logger.info(f"Recent projects found for {contractor_name}, boosted timeline_score by {project_bonus:.2f}")
+                elif not profile.recent_projects:
+                    # No recent projects found - but don't penalize if it's missing data
+                    # Only penalize if we have web research but found nothing (negative signal)
+                    if has_web_research and profile.reputation_score < 0.6:
+                        # We searched and found low reputation + no projects = negative signal
+                        score.risk_score = max(0.0, score.risk_score - 0.1)
+                        logger.info(f"No recent projects found for {contractor_name} despite web search, slight risk penalty")
+                    else:
+                        # Missing data - use neutral/moderate score, don't penalize
+                        # Ensure timeline_score doesn't go too low due to missing data
+                        if score.timeline_score < 0.60:
+                            score.timeline_score = max(0.60, score.timeline_score)
+                            logger.info(f"Missing Serper data for {contractor_name}, using neutral timeline_score: {score.timeline_score:.2f}")
+                        # Ensure risk_score doesn't go too low due to missing data
+                        if score.risk_score < 0.50:
+                            score.risk_score = max(0.50, score.risk_score)
+                            logger.info(f"Missing Serper data for {contractor_name}, using neutral risk_score: {score.risk_score:.2f}")
             
             # Calculate weighted overall score using fixed weights
             score.overall_score = (
