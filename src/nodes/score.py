@@ -3,6 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from src.state import BidEvalState
 from src.schemas import BidScore, RedFlag, RedFlagType
 from src.config import gpt4o_mini
+from src.utils import calculate_dynamic_weights, detect_constraint_violations
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,15 @@ def score_and_flag(state: BidEvalState) -> BidEvalState:
     requirements = state["requirements"]
     contractor_profiles = {p.contractor_name: p for p in state.get("contractor_profiles", [])}
     
-    logger.info(f"Scoring {len(bids)} bids")
+    # Calculate dynamic weights based on project priorities
+    weights = calculate_dynamic_weights(requirements) if requirements else {
+        "cost": 0.25,
+        "timeline": 0.20,
+        "scope": 0.25,
+        "risk": 0.15,
+        "reputation": 0.15,
+    }
+    logger.info(f"Scoring {len(bids)} bids with dynamic weights: Cost={weights['cost']:.0%}, Timeline={weights['timeline']:.0%}, Scope={weights['scope']:.0%}, Risk={weights['risk']:.0%}, Reputation={weights['reputation']:.0%}")
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """Score the bid across 5 dimensions (0-1 scale) using the contractor profile data from web research:
@@ -101,7 +110,7 @@ Score this bid. You MUST use the contractor profile data from web research in yo
             score.bid_id = bid_id
             score.contractor_name = contractor_name
             
-            # Check scope text for vagueness (heuristic check)
+            # Check scope text for vagueness (heuristic check) - STRICTER
             scope_text = bid.get("scope", "").lower()
             vague_scope_keywords = ["construction", "building", "work", "renovation work"]
             is_vague_scope = len(scope_text.split()) < 10 or any(
@@ -109,10 +118,25 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                 for keyword in vague_scope_keywords
             )
             
-            # If scope is very vague, reduce scope_score
-            if is_vague_scope and score.scope_score > 0.5:
-                score.scope_score = min(score.scope_score, 0.65)
+            # If scope is very vague, reduce scope_score more aggressively
+            if is_vague_scope:
+                if len(scope_text.split()) < 5:
+                    # Extremely vague (e.g., "Building construction")
+                    score.scope_score = min(score.scope_score, 0.50)
+                elif len(scope_text.split()) < 10:
+                    # Very vague
+                    score.scope_score = min(score.scope_score, 0.65)
+                else:
+                    # Somewhat vague
+                    score.scope_score = min(score.scope_score, 0.75)
                 logger.info(f"Detected vague scope text for {contractor_name}, adjusted scope_score to {score.scope_score:.2f}")
+            
+            # Additional check: If scope mentions subcontracting critical work, reduce scope score
+            if "subcontract" in scope_text or "subcontracted" in scope_text:
+                if score.scope_score > 0.70:
+                    # Reduce scope score if critical work is subcontracted without details
+                    score.scope_score = max(0.60, score.scope_score - 0.10)
+                    logger.info(f"Subcontracted work detected for {contractor_name}, reduced scope_score to {score.scope_score:.2f}")
             
             # ENFORCE: If Serper data exists, use it to adjust scores
             if profile and profile.reputation_score is not None:
@@ -138,14 +162,16 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                     # No recent projects and low reputation = higher risk
                     score.risk_score = max(0.0, score.risk_score - 0.1)
             
-            # Calculate weighted overall score
+            # Calculate weighted overall score using dynamic weights
             score.overall_score = (
-                score.cost_score * 0.25 +
-                score.timeline_score * 0.20 +
-                score.scope_score * 0.25 +
-                score.risk_score * 0.15 +
-                score.reputation_score * 0.15
+                score.cost_score * weights["cost"] +
+                score.timeline_score * weights["timeline"] +
+                score.scope_score * weights["scope"] +
+                score.risk_score * weights["risk"] +
+                score.reputation_score * weights["reputation"]
             )
+            # Round to 2 decimal places for consistency
+            score.overall_score = round(score.overall_score, 2)
             
             scores.append(score)
             
@@ -206,6 +232,32 @@ Score this bid. You MUST use the contractor profile data from web research in yo
                     evidence=f"Timeline score: {score.timeline_score:.2f}. Timeline may be unrealistic or vague.",
                     affected_bid=score.bid_id,
                 ))
+            
+            # Detect constraint violations (subcontractor risk, operational disruption, etc.)
+            if requirements:
+                constraint_violations = detect_constraint_violations(bid, requirements, score.scope_score)
+                for violation in constraint_violations:
+                    red_flags.append(RedFlag(
+                        type=RedFlagType[violation["type"]],
+                        severity=violation["severity"],
+                        evidence=violation["evidence"],
+                        affected_bid=score.bid_id,
+                    ))
+            
+            # Enhanced subcontractor risk detection
+            scope_text_lower = bid.get("scope", "").lower()
+            if "subcontract" in scope_text_lower or "subcontracted" in scope_text_lower:
+                # Check if critical work is subcontracted
+                critical_keywords = ["electrical", "power", "hvac", "structural", "foundation"]
+                if any(keyword in scope_text_lower for keyword in critical_keywords):
+                    # Check if scope score is low (indicates incomplete details)
+                    if score.scope_score < 0.75:
+                        red_flags.append(RedFlag(
+                            type=RedFlagType.SUBCONTRACTOR_RISK,
+                            severity="high",
+                            evidence=f"Critical work ({', '.join([k for k in critical_keywords if k in scope_text_lower])}) is subcontracted with incomplete scope details (score: {score.scope_score:.2f}). Increases coordination risk and operational disruption potential.",
+                            affected_bid=score.bid_id,
+                        ))
             
             # ENFORCE: Use Serper web research data for red flags
             if profile:
