@@ -115,11 +115,6 @@ class _LazyModel:
 gpt4o_mini = _LazyModel(get_gpt4o_mini)
 gpt4o = _LazyModel(get_gpt4o)
 
-# LangSmith - Only enable if API key is provided
-if LANGSMITH_API_KEY:
-    os.environ["LANGCHAIN_TRACING_V2"] = "true"
-    os.environ["LANGCHAIN_API_KEY"] = LANGSMITH_API_KEY
-    os.environ["LANGCHAIN_PROJECT"] = LANGSMITH_PROJECT
-else:
-    os.environ["LANGCHAIN_TRACING_V2"] = "false"
+# LangSmith will be initialized lazily when secrets are loaded
+# (handled in _init_langsmith() called from get_gpt4o_mini/get_gpt4o)
 
