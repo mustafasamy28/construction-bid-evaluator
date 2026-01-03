@@ -3,18 +3,22 @@ import logging
 import sys
 from pathlib import Path
 
-# Create logs directory if it doesn't exist
+# Try to create logs directory, but handle errors gracefully (e.g., in Streamlit Cloud)
 LOG_DIR = Path(__file__).parent.parent / "logs"
-LOG_DIR.mkdir(exist_ok=True)
+try:
+    LOG_DIR.mkdir(exist_ok=True)
+    # Try to create file handler
+    file_handler = logging.FileHandler(LOG_DIR / "bid_evaluation.log")
+    handlers = [file_handler, logging.StreamHandler(sys.stdout)]
+except (PermissionError, OSError, Exception):
+    # If we can't create logs directory (e.g., in Streamlit Cloud), use console only
+    handlers = [logging.StreamHandler(sys.stdout)]
 
 # Configure root logger
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_DIR / "bid_evaluation.log"),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=handlers
 )
 
 # Set specific log levels for external libraries
